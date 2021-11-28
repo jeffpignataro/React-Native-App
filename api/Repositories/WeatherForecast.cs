@@ -1,4 +1,6 @@
-namespace api;
+using System;
+
+namespace api.Models;
 
 public class WeatherForecast
 {

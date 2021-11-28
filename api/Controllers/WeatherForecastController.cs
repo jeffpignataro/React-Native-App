@@ -1,4 +1,9 @@
+using System;
+using System.Collections.Generic;
+using api.Interfaces;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace api.Controllers;
 
@@ -12,21 +17,38 @@ public class WeatherForecastController : ControllerBase
     };
 
     private readonly ILogger<WeatherForecastController> _logger;
+    private readonly IWeatherForecast repo;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, IWeatherForecast repo)
     {
-        _logger = logger;
+        this._logger = logger;
+        this.repo = repo;
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
+    [Route("Get")]
     public IEnumerable<WeatherForecast> Get()
     {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+        var repoValue = repo.Get();
+
+        var weatherForecasts = new List<WeatherForecast>() { repoValue };
+
+        return weatherForecasts;
     }
+
+    [HttpGet(Name = "CreateWeatherForecast")]
+    [Route("Create")]
+    public void Create()
+    {
+        var weatherForecast = new WeatherForecast
+        {
+            Date = DateTime.Now,
+            TemperatureC = new Random().Next(-20, 55),
+            Summary = Summaries[new Random().Next(Summaries.Length)]
+        };
+
+        repo.Create(weatherForecast);
+    }
+
+
 }
