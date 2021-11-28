@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using api.Interfaces;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace api.Controllers;
 
